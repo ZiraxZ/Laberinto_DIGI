@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mapa del laberint</title>
+<style>
+:root{--bg:#eef2f5;--paper:#fbfdfe;--ink:#1f2a37;--muted:#5b6b7b;--grid:#d3dee7;--cell:#ffffff;--line:#5b6b7b;--chest:#c98a00;--req:#c2382f;--opt:#2f6fb5;--fin:#2e8b57;--ins:#7a4fb5;--on:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141a21;--paper:#1b232c;--ink:#e6edf3;--muted:#9aaabb;--grid:#2a3641;--cell:#222c36;--line:#8fa1b3;--chest:#e7ad2e;--req:#ef6b60;--opt:#6aa6e8;--fin:#4cc58a;--ins:#b08be8;--on:#111;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141a21;--paper:#1b232c;--ink:#e6edf3;--muted:#9aaabb;--grid:#2a3641;--cell:#222c36;--line:#8fa1b3;--chest:#e7ad2e;--req:#ef6b60;--opt:#6aa6e8;--fin:#4cc58a;--ins:#b08be8;--on:#111;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Trebuchet MS","Segoe UI",system-ui,sans-serif}
+main{max-width:760px;margin:0 auto;padding:16px}
+h1{font:700 1.5rem/1.2 Georgia,"Times New Roman",serif;margin:4px 0 2px}
+h2{font:700 1.05rem/1.2 Georgia,"Times New Roman",serif;margin:18px 0 6px}
+.sub{color:var(--muted);margin:0 0 12px;font-size:.9rem}
+.lights{display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:10px 12px;margin:0 0 12px}
+.big{font:700 2.4rem/1 Georgia,"Times New Roman",serif;color:var(--chest)}
+.big.low{color:var(--req)}
+.big small{font:600 .8rem "Trebuchet MS",sans-serif;color:var(--muted);margin-left:6px}
+#l-info{font-size:.9rem;color:var(--muted);flex:1 1 200px}
+#l-info b{color:var(--ink)}
+.warn{color:var(--req)!important;font-weight:700}
+.set{display:flex;gap:10px;flex-wrap:wrap}
+.fld{display:block;font-size:.82rem;color:var(--muted)}
+.set input{width:92px}
+#map{background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;border:2px solid var(--ink);border-radius:6px;height:42vh;min-height:240px;overflow:auto}
+#map svg{display:block;margin:0 auto}
+.cell{fill:var(--cell);stroke:var(--line);stroke-width:2;cursor:pointer}
+.cell.fin{stroke:var(--fin);stroke-width:4}
+.cell.here{stroke:var(--ink);stroke-width:5}
+.lnk{stroke:var(--line);stroke-width:5;stroke-linecap:round}
+.b{stroke:none}.b.chest{fill:var(--chest)}.b.req{fill:var(--req)}.b.opt{fill:var(--opt)}.b.fin{fill:var(--fin)}.b.ins{fill:var(--ins)}
+.bt{font:700 12px sans-serif;fill:var(--on);text-anchor:middle;pointer-events:none}
+.bt.sm{font-size:10px}
+.lbl{font:700 11px sans-serif;fill:var(--muted);text-anchor:middle;pointer-events:none}
+.me{font:700 13px sans-serif;fill:var(--ink);text-anchor:middle;pointer-events:none}
+.panel{display:grid;grid-template-columns:auto 1fr;gap:16px;margin-top:14px;align-items:start}
+@media (max-width:520px){.panel{grid-template-columns:1fr}.dpad{margin:0 auto}}
+.dpad{display:grid;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(3,56px);gap:6px}
+button{font:inherit;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:8px 10px;cursor:pointer;min-height:44px}
+button:hover{background:var(--grid)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--opt);outline-offset:2px}
+.dpad button{font-weight:700;padding:4px}
+.n{grid-column:2;grid-row:1}.o{grid-column:1;grid-row:2}.e{grid-column:3;grid-row:2}.s{grid-column:2;grid-row:3}
+.flags{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.flags button[aria-pressed="true"]{color:var(--on);border-color:transparent}
+#f-chest[aria-pressed="true"]{background:var(--chest)}#f-req[aria-pressed="true"]{background:var(--req)}#f-opt[aria-pressed="true"]{background:var(--opt)}#f-fin[aria-pressed="true"]{background:var(--fin)}
+input,textarea{font:inherit;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:8px 10px;width:100%;box-sizing:border-box;margin-top:4px}
+textarea{resize:vertical;min-height:64px}
+.panel .fld{margin-top:10px}
+.row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.log{margin-top:12px;font-size:.95rem;color:var(--muted);word-break:break-word}
+.log b{color:var(--ink);letter-spacing:.04em}
+.leg{display:flex;gap:12px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);margin-top:8px}
+.leg i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+#ins-list{list-style:none;margin:0;padding:0}
+#ins-list li{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid var(--grid);word-break:break-word}
+#ins-list button{min-height:36px;padding:2px 10px;flex:none;font-weight:700}
+.empty{color:var(--muted);font-size:.9rem}
+.cell.sel{stroke:var(--opt);stroke-width:5;stroke-dasharray:7 5}
+.ex{fill:var(--ink);stroke:none;pointer-events:none}
+.exits{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:4px}
+.exits button{padding:8px 4px;font-size:1rem}
+.exits button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.card{margin-top:12px;background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:10px 12px;font-size:.95rem}
+.card .row{margin-top:8px}
+</style>
+</head>
+<body>
+<main>
+<h1>Mapa del laberint</h1>
+<p class="sub">Prem la direcció cada cop que et moguis i el mapa es dibuixa sol. També pots fer servir les fletxes del teclat. Toca una sala del mapa per veure’n les sortides i prem «Vés-hi» per moure’t-hi.</p>
+
+<section class="lights" aria-label="Llums">
+<div class="big" id="l-big"><span id="l-now">0</span><small>llums</small></div>
+<div id="l-info" aria-live="polite"></div>
+<div class="set">
+<label class="fld">Llums inicials<input id="l0" type="number" min="0" inputmode="numeric"></label>
+<label class="fld">Llums per pas<input id="cost" type="number" min="0" inputmode="numeric"></label>
+</div>
+</section>
+
+<div id="map" aria-label="Mapa del laberint"></div>
+<div class="leg"><span><i style="background:var(--chest)"></i>Cofre (+llums)</span><span><i style="background:var(--req)"></i>Prova obligatòria</span><span><i style="background:var(--opt)"></i>Prova opcional</span><span><i style="background:var(--ins)"></i>Inscripció</span><span><i style="background:var(--fin)"></i>Final</span></div>
+<div class="card" id="card" aria-live="polite"></div>
+<div class="panel">
+<div class="dpad">
+<button class="n" data-d="N">Nord</button><button class="o" data-d="O">Oest</button><button class="e" data-d="E">Est</button><button class="s" data-d="S">Sud</button>
+</div>
+<div>
+<div class="flags">
+<button id="f-chest" data-f="chest" aria-pressed="false">Cofre</button>
+<button id="f-fin" data-f="fin" aria-pressed="false">Final</button>
+<button id="f-req" data-f="req" aria-pressed="false">Prova obligatòria</button>
+<button id="f-opt" data-f="opt" aria-pressed="false">Prova opcional</button>
+</div>
+<div class="fld" role="group" aria-label="Sortides de la sala actual">Sortides de la sala actual (cap a on pots anar)<div class="exits"><button id="x-N" data-x="N" aria-pressed="false">Nord</button><button id="x-S" data-x="S" aria-pressed="false">Sud</button><button id="x-E" data-x="E" aria-pressed="false">Est</button><button id="x-O" data-x="O" aria-pressed="false">Oest</button></div></div>
+<label class="fld" id="gain-row" hidden>Llums que dóna el cofre<input id="gain" type="number" min="0" inputmode="numeric"></label>
+<label class="fld">Inscripció d’aquesta casella (què diu i què vol dir)<textarea id="ins" maxlength="240" placeholder="Ex.: «Només la llum guia» → pista per a la prova del nord"></textarea></label>
+<label class="fld">Nota de la casella (opcional)<input id="note" type="text" maxlength="80"></label>
+</div>
+</div>
+<div class="row"><button id="undo">Desfés l’últim pas</button><button id="reset">Torna a començar</button></div>
+<div class="log" id="log"></div>
+
+<h2>Inscripcions trobades</h2>
+<ul id="ins-list"></ul>
+</main>
+<script>
+const D={N:[0,-1],S:[0,1],E:[1,0],O:[-1,0]};
+const DN={N:'Nord',S:'Sud',E:'Est',O:'Oest'};
+const STEP=96,SZ=72,PAD=50,KEY='laberint-v2';
+const $=id=>document.getElementById(id);
+const num=v=>Math.max(0,parseInt(v,10)||0);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let st=load(),armed=false,sel=null;
+function fresh(l0,cost){return{cells:{'0,0':nc(0,0)},pos:'0,0',links:[],hist:[],llums0:l0||0,cost:cost==null?1:cost}}
+function nc(x,y){return{x:x,y:y,chest:0,req:0,opt:0,fin:0,gain:0,ins:'',ex:'',note:''}}
+function load(){
+  try{
+    const s=localStorage.getItem(KEY)||localStorage.getItem('laberint-v1');
+    if(s){const o=JSON.parse(s);
+      if(o&&o.cells&&o.cells[o.pos]){
+        if(typeof o.llums0!=='number')o.llums0=0;
+        if(typeof o.cost!=='number')o.cost=1;
+        for(const k in o.cells){const c=o.cells[k];if(typeof c.gain!=='number')c.gain=0;if(typeof c.ins!=='string')c.ins='';if(typeof c.ex!=='string')c.ex=''}
+        return o}}
+  }catch(e){}
+  return fresh();
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+function move(d){
+  const c=st.cells[st.pos],nx=c.x+D[d][0],ny=c.y+D[d][1],k=nx+','+ny;
+  let created=false,linked=false;
+  if(!st.cells[k]){st.cells[k]=nc(nx,ny);created=true}
+  const lk=[st.pos,k].sort().join('|');
+  if(!st.links.includes(lk)){st.links.push(lk);linked=true}
+  st.hist.push({from:st.pos,to:k,d:d,created:created,linked:linked,lk:lk});
+  st.pos=k;sel=null;save();render(true);
+}
+function jump(k){
+  if(k===st.pos)return;
+  st.hist.push({from:st.pos,to:k,d:null,created:false,linked:false,lk:''});
+  st.pos=k;sel=null;save();render(true);
+}
+function undo(){
+  const h=st.hist.pop();if(!h)return;
+  if(h.linked)st.links=st.links.filter(l=>l!==h.lk);
+  if(h.created)delete st.cells[h.to];
+  st.pos=h.from;sel=null;save();render(true);
+}
+function dist(from,isT){
+  const adj={};
+  st.links.forEach(l=>{const p=l.split('|');(adj[p[0]]=adj[p[0]]||[]).push(p[1]);(adj[p[1]]=adj[p[1]]||[]).push(p[0])});
+  const seen={};seen[from]=0;const q=[from];
+  for(let i=0;i<q.length;i++){
+    const k=q[i];if(isT(k))return seen[k];
+    (adj[k]||[]).forEach(n=>{if(!(n in seen)){seen[n]=seen[k]+1;q.push(n)}});
+  }
+  return null;
+}
+function lab(c){const p=[];if(c.y)p.push((c.y<0?'N':'S')+Math.abs(c.y));if(c.x)p.push((c.x>0?'E':'O')+Math.abs(c.x));return p.length?p.join(' '):'Inici'}
+function setVal(el,v){if(document.activeElement!==el)el.value=v}
+function render(center){
+  const keys=Object.keys(st.cells),cs=keys.map(k=>st.cells[k]);
+  const minX=Math.min(...cs.map(c=>c.x)),maxX=Math.max(...cs.map(c=>c.x));
+  const minY=Math.min(...cs.map(c=>c.y)),maxY=Math.max(...cs.map(c=>c.y));
+  const W=(maxX-minX)*STEP+SZ+PAD*2,H=(maxY-minY)*STEP+SZ+PAD*2;
+  const px=c=>(c.x-minX)*STEP+PAD+SZ/2,py=c=>(c.y-minY)*STEP+PAD+SZ/2;
+  let s='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" role="img">';
+  st.links.forEach(l=>{const p=l.split('|'),a=st.cells[p[0]],b=st.cells[p[1]];if(a&&b)s+='<line class="lnk" x1="'+px(a)+'" y1="'+py(a)+'" x2="'+px(b)+'" y2="'+py(b)+'"/>'});
+  keys.forEach(k=>{
+    const c=st.cells[k],x=px(c),y=py(c),h=k===st.pos;
+    s+='<g data-k="'+k+'">'+(c.ins?'<title>'+esc(c.ins)+'</title>':'')+'<rect class="cell'+(c.fin?' fin':'')+(h?' here':'')+(k===sel&&!h?' sel':'')+'" x="'+(x-SZ/2)+'" y="'+(y-SZ/2)+'" width="'+SZ+'" height="'+SZ+'" rx="9"/>';
+    const bd=[['chest','C',-1,-1],['req','!',1,-1],['opt','?',-1,1],['fin','F',1,1]];
+    bd.forEach(b=>{if(c[b[0]]){
+      const bx=x+b[2]*21,by=y+b[3]*21;
+      const t=(b[0]==='chest'&&c.gain>0)?'+'+c.gain:b[1];
+      s+='<circle class="b '+b[0]+'" cx="'+bx+'" cy="'+by+'" r="13"/><text class="bt'+(t.length>2?' sm':'')+'" x="'+bx+'" y="'+(by+4)+'">'+t+'</text>'}});
+    const ex=c.ex||'',hs=SZ/2,ar={N:[x-6,y-hs+11,x+6,y-hs+11,x,y-hs+3],S:[x-6,y+hs-11,x+6,y+hs-11,x,y+hs-3],E:[x+hs-11,y-6,x+hs-11,y+6,x+hs-3,y],O:[x-hs+11,y-6,x-hs+11,y+6,x-hs+3,y]};
+    for(const d in ar)if(ex.includes(d)){const a=ar[d];s+='<polygon class="ex" points="'+a[0]+','+a[1]+' '+a[2]+','+a[3]+' '+a[4]+','+a[5]+'"/>'}
+    if(c.ins)s+='<circle class="b ins" cx="'+x+'" cy="'+y+'" r="11"/><text class="bt" x="'+x+'" y="'+(y+4)+'">I</text>';
+    if(k==='0,0')s+='<text class="lbl" x="'+x+'" y="'+(y-SZ/2-8)+'">Inici</text>';
+    if(h)s+='<text class="me" x="'+x+'" y="'+(y+SZ/2+18)+'">Ets aquí</text>';
+    s+='</g>';
+  });
+  s+='</svg>';
+  const m=$('map'),sl=m.scrollLeft,sp=m.scrollTop;m.innerHTML=s;
+  const cur=st.cells[st.pos];
+  if(center){m.scrollLeft=px(cur)-m.clientWidth/2;m.scrollTop=py(cur)-m.clientHeight/2}else{m.scrollLeft=sl;m.scrollTop=sp}
+  m.querySelectorAll('g[data-k]').forEach(g=>g.addEventListener('click',()=>{sel=g.dataset.k===st.pos?null:g.dataset.k;render()}));
+  ['chest','req','opt','fin'].forEach(f=>$('f-'+f).setAttribute('aria-pressed',cur[f]?'true':'false'));
+  ['N','S','E','O'].forEach(d=>$('x-'+d).setAttribute('aria-pressed',(cur.ex||'').includes(d)?'true':'false'));
+  $('gain-row').hidden=!cur.chest;
+  setVal($('gain'),cur.gain);setVal($('ins'),cur.ins||'');setVal($('note'),cur.note||'');
+  setVal($('l0'),st.llums0);setVal($('cost'),st.cost);
+
+  let gain=0;keys.forEach(k=>{if(st.cells[k].chest)gain+=st.cells[k].gain||0});
+  const steps=st.hist.filter(h=>h.d).length,spent=steps*st.cost,now=st.llums0+gain-spent;
+  const toStart=dist(st.pos,k=>k==='0,0'),toFin=dist(st.pos,k=>st.cells[k].fin);
+  const need=toStart===null?0:toStart*st.cost;
+  const low=now<=0||now<need;
+  $('l-now').textContent=now;
+  $('l-big').className='big'+(low?' low':'');
+  let info='Inicials: <b>'+st.llums0+'</b> · Dels cofres: <b>+'+gain+'</b> · Gastades: <b>'+spent+'</b>';
+  info+='<br>Fins a l’inici: <b>'+(toStart===null?'—':toStart+' passos')+'</b>';
+  if(toFin)info+=' · Fins al final: <b>'+toFin+' passos</b>';
+  if(now<=0)info+='<br><span class="warn">Sense llums! Ja no pots avançar.</span>';
+  else if(toStart&&now<need)info+='<br><span class="warn">Compte: per tornar a l’inici en necessites '+need+'.</span>';
+  $('l-info').innerHTML=info;
+
+  const trail=st.hist.map(h=>h.d||'↷').join(' ');
+  const sk=(sel&&st.cells[sel])?sel:st.pos,sc=st.cells[sk],sx=sc.ex||'';
+  let ch='<b>'+(sk===st.pos?'Sala actual: ':'Sala: ')+lab(sc)+'</b><br>';
+  ch+=sx?'Sortides: '+['N','S','E','O'].filter(d=>sx.includes(d)).map(d=>{const nk=(sc.x+D[d][0])+','+(sc.y+D[d][1]);return '<b>'+DN[d]+'</b>'+(st.links.includes([sk,nk].sort().join('|'))?'':' (per explorar)')}).join(', ')+'.':'<span class="empty">Cap sortida apuntada en aquesta sala.</span>';
+  if(sk!==st.pos)ch+='<div class="row"><button id="go">Vés-hi</button></div>';
+  $('card').innerHTML=ch;
+  const go=$('go');if(go)go.addEventListener('click',()=>jump(sk));
+  $('log').innerHTML='Caselles: <b>'+keys.length+'</b> · Passos: <b>'+steps+'</b>'+(trail?'<br>Recorregut: <b>'+trail+'</b>':'');
+
+  const items=keys.filter(k=>st.cells[k].ins);
+  $('ins-list').innerHTML=items.length?items.map(k=>'<li><button data-j="'+k+'">'+lab(st.cells[k])+'</button><span>'+esc(st.cells[k].ins)+'</span></li>').join(''):'<li class="empty">Encara no has apuntat cap inscripció. Escriu-la a la casella on la trobis.</li>';
+  document.querySelectorAll('[data-j]').forEach(b=>b.addEventListener('click',()=>{jump(b.dataset.j)}));
+}
+document.querySelectorAll('[data-d]').forEach(b=>b.addEventListener('click',()=>move(b.dataset.d)));
+document.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{const c=st.cells[st.pos];c[b.dataset.f]=c[b.dataset.f]?0:1;save();render()}));
+$('l0').addEventListener('input',e=>{st.llums0=num(e.target.value);save();render()});
+$('cost').addEventListener('input',e=>{st.cost=num(e.target.value);save();render()});
+$('gain').addEventListener('input',e=>{st.cells[st.pos].gain=num(e.target.value);save();render()});
+$('ins').addEventListener('input',e=>{st.cells[st.pos].ins=e.target.value;save();render()});
+$('note').addEventListener('input',e=>{st.cells[st.pos].note=e.target.value;save()});
+document.querySelectorAll('[data-x]').forEach(b=>b.addEventListener('click',()=>{const c=st.cells[st.pos],d=b.dataset.x,s=c.ex||'';c.ex=s.includes(d)?s.replace(d,''):s+d;save();render()}));
+$('undo').addEventListener('click',undo);
+const rb=$('reset');
+rb.addEventListener('click',()=>{
+  if(!armed){armed=true;rb.textContent='Segur? Prem un altre cop';setTimeout(()=>{armed=false;rb.textContent='Torna a començar'},3000);return}
+  armed=false;rb.textContent='Torna a començar';st=fresh(st.llums0,st.cost);sel=null;save();render(true);
+});
+document.addEventListener('keydown',e=>{
+  if(/INPUT|TEXTAREA/.test(e.target.tagName))return;
+  const m={ArrowUp:'N',ArrowDown:'S',ArrowRight:'E',ArrowLeft:'O'}[e.key];
+  if(m){e.preventDefault();move(m)}
+});
+render(true);
+</script>
+</body>
+</html>
