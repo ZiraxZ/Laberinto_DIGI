@@ -99,11 +99,13 @@ textarea{resize:vertical;min-height:64px}
 </div>
 <div class="fld" role="group" aria-label="Sortides de la sala actual">Sortides de la sala actual (cap a on pots anar)<div class="exits"><button id="x-N" data-x="N" aria-pressed="false">Nord</button><button id="x-S" data-x="S" aria-pressed="false">Sud</button><button id="x-E" data-x="E" aria-pressed="false">Est</button><button id="x-O" data-x="O" aria-pressed="false">Oest</button></div></div>
 <label class="fld" id="gain-row" hidden>Llums que dóna el cofre<input id="gain" type="number" min="0" inputmode="numeric"></label>
+<label class="fld">Canvi de llums d’aquesta sala (+ suma / − resta)<input id="room-light" type="number" step="1" inputmode="numeric" placeholder="0"></label>
+<p class="sub">Aquest canvi només compta una vegada per sala visitada. Pots posar un valor positiu o negatiu.</p>
 <label class="fld">Inscripció d’aquesta casella (què diu i què vol dir)<textarea id="ins" maxlength="240" placeholder="Ex.: «Només la llum guia» → pista per a la prova del nord"></textarea></label>
 <label class="fld">Nota de la casella (opcional)<input id="note" type="text" maxlength="80"></label>
 </div>
 </div>
-<div class="row"><button id="undo">Desfés l’últim pas</button><button id="reset">Torna a començar</button></div>
+<div class="row"><button id="undo">Desfés l’últim pas</button><button id="reset">Torna a començar</button><button id="export-pdf">Descarrega l’estat en PDF</button></div>
 <div class="log" id="log"></div>
 
 <h2>Inscripcions trobades</h2>
@@ -118,7 +120,7 @@ const num=v=>Math.max(0,parseInt(v,10)||0);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let st=load(),armed=false,sel=null;
 function fresh(l0,cost){return{cells:{'0,0':nc(0,0)},pos:'0,0',links:[],hist:[],llums0:l0||0,cost:cost==null?1:cost}}
-function nc(x,y){return{x:x,y:y,chest:0,req:0,opt:0,fin:0,gain:0,ins:'',ex:'',note:''}}
+function nc(x,y){return{x:x,y:y,chest:0,req:0,opt:0,fin:0,gain:0,roomLight:0,ins:'',ex:'',note:''}}
 function load(){
   try{
     const s=localStorage.getItem(KEY)||localStorage.getItem('laberint-v1');
@@ -126,7 +128,7 @@ function load(){
       if(o&&o.cells&&o.cells[o.pos]){
         if(typeof o.llums0!=='number')o.llums0=0;
         if(typeof o.cost!=='number')o.cost=1;
-        for(const k in o.cells){const c=o.cells[k];if(typeof c.gain!=='number')c.gain=0;if(typeof c.ins!=='string')c.ins='';if(typeof c.ex!=='string')c.ex=''}
+        for(const k in o.cells){const c=o.cells[k];if(typeof c.gain!=='number')c.gain=0;if(typeof c.roomLight!=='number')c.roomLight=0;if(typeof c.ins!=='string')c.ins='';if(typeof c.ex!=='string')c.ex=''}
         return o}}
   }catch(e){}
   return fresh();
@@ -195,17 +197,19 @@ function render(center){
   ['chest','req','opt','fin'].forEach(f=>$('f-'+f).setAttribute('aria-pressed',cur[f]?'true':'false'));
   ['N','S','E','O'].forEach(d=>$('x-'+d).setAttribute('aria-pressed',(cur.ex||'').includes(d)?'true':'false'));
   $('gain-row').hidden=!cur.chest;
-  setVal($('gain'),cur.gain);setVal($('ins'),cur.ins||'');setVal($('note'),cur.note||'');
+  setVal($('gain'),cur.gain);setVal($('room-light'),cur.roomLight||0);setVal($('ins'),cur.ins||'');setVal($('note'),cur.note||'');
   setVal($('l0'),st.llums0);setVal($('cost'),st.cost);
 
   let gain=0;keys.forEach(k=>{if(st.cells[k].chest)gain+=st.cells[k].gain||0});
-  const steps=st.hist.filter(h=>h.d).length,spent=steps*st.cost,now=st.llums0+gain-spent;
+  const visited=new Set(['0,0',st.pos,...st.hist.map(h=>h.to)]);
+  let roomDelta=0;visited.forEach(k=>{if(st.cells[k])roomDelta+=st.cells[k].roomLight||0});
+  const steps=st.hist.filter(h=>h.d).length,spent=steps*st.cost,now=st.llums0+gain+roomDelta-spent;
   const toStart=dist(st.pos,k=>k==='0,0'),toFin=dist(st.pos,k=>st.cells[k].fin);
   const need=toStart===null?0:toStart*st.cost;
   const low=now<=0||now<need;
   $('l-now').textContent=now;
   $('l-big').className='big'+(low?' low':'');
-  let info='Inicials: <b>'+st.llums0+'</b> · Dels cofres: <b>+'+gain+'</b> · Gastades: <b>'+spent+'</b>';
+  let info='Inicials: <b>'+st.llums0+'</b> · Dels cofres: <b>+'+gain+'</b> · Sales: <b>'+(roomDelta>0?'+':'')+roomDelta+'</b> · Gastades: <b>'+spent+'</b>';
   info+='<br>Fins a l’inici: <b>'+(toStart===null?'—':toStart+' passos')+'</b>';
   if(toFin)info+=' · Fins al final: <b>'+toFin+' passos</b>';
   if(now<=0)info+='<br><span class="warn">Sense llums! Ja no pots avançar.</span>';
@@ -216,6 +220,9 @@ function render(center){
   const sk=(sel&&st.cells[sel])?sel:st.pos,sc=st.cells[sk],sx=sc.ex||'';
   let ch='<b>'+(sk===st.pos?'Sala actual: ':'Sala: ')+lab(sc)+'</b><br>';
   ch+=sx?'Sortides: '+['N','S','E','O'].filter(d=>sx.includes(d)).map(d=>{const nk=(sc.x+D[d][0])+','+(sc.y+D[d][1]);return '<b>'+DN[d]+'</b>'+(st.links.includes([sk,nk].sort().join('|'))?'':' (per explorar)')}).join(', ')+'.':'<span class="empty">Cap sortida apuntada en aquesta sala.</span>';
+  if(sc.roomLight)ch+='<br>Canvi de llums d’aquesta sala: <b>'+(sc.roomLight>0?'+':'')+sc.roomLight+'</b>';
+  if(sc.ins)ch+='<br>Inscripció: '+esc(sc.ins);
+  if(sc.note)ch+='<br>Nota: '+esc(sc.note);
   if(sk!==st.pos)ch+='<div class="row"><button id="go">Vés-hi</button></div>';
   $('card').innerHTML=ch;
   const go=$('go');if(go)go.addEventListener('click',()=>jump(sk));
@@ -230,6 +237,7 @@ document.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>
 $('l0').addEventListener('input',e=>{st.llums0=num(e.target.value);save();render()});
 $('cost').addEventListener('input',e=>{st.cost=num(e.target.value);save();render()});
 $('gain').addEventListener('input',e=>{st.cells[st.pos].gain=num(e.target.value);save();render()});
+$('room-light').addEventListener('input',e=>{st.cells[st.pos].roomLight=parseInt(e.target.value,10)||0;save();render()});
 $('ins').addEventListener('input',e=>{st.cells[st.pos].ins=e.target.value;save();render()});
 $('note').addEventListener('input',e=>{st.cells[st.pos].note=e.target.value;save()});
 document.querySelectorAll('[data-x]').forEach(b=>b.addEventListener('click',()=>{const c=st.cells[st.pos],d=b.dataset.x,s=c.ex||'';c.ex=s.includes(d)?s.replace(d,''):s+d;save();render()}));
@@ -244,6 +252,34 @@ document.addEventListener('keydown',e=>{
   const m={ArrowUp:'N',ArrowDown:'S',ArrowRight:'E',ArrowLeft:'O'}[e.key];
   if(m){e.preventDefault();move(m)}
 });
+
+function exportPDF(){
+  const w=window.open('','_blank');
+  if(!w){alert('El navegador ha bloquejat la finestra. Permet les finestres emergents per descarregar el PDF.');return}
+  const keys=Object.keys(st.cells),visited=new Set(['0,0',st.pos,...st.hist.map(h=>h.to)]);
+  let chestTotal=0,roomTotal=0;
+  keys.forEach(k=>{const c=st.cells[k];if(c.chest)chestTotal+=c.gain||0;if(visited.has(k))roomTotal+=c.roomLight||0});
+  const steps=st.hist.filter(h=>h.d).length,spent=steps*st.cost,now=st.llums0+chestTotal+roomTotal-spent;
+  const trail=st.hist.map(h=>h.d||'↷').join(' ')||'—';
+  const flags=c=>['chest','req','opt','fin'].filter(f=>c[f]).map(f=>({chest:'Cofre',req:'Prova obligatòria',opt:'Prova opcional',fin:'Final'}[f])).join(', ')||'—';
+  const exits=c=>['N','S','E','O'].filter(d=>(c.ex||'').includes(d)).map(d=>DN[d]).join(', ')||'—';
+  const rooms=keys.map(k=>{
+    const c=st.cells[k];
+    return '<tr><td>'+esc(lab(c))+'</td><td>'+esc(flags(c))+'</td><td>'+esc(exits(c))+'</td><td>'+(c.chest?c.gain:0)+'</td><td>'+(c.roomLight>0?'+':'')+(c.roomLight||0)+'</td><td>'+esc(c.note||'—')+'</td><td>'+esc(c.ins||'—')+'</td></tr>';
+  }).join('');
+  const ins=keys.filter(k=>st.cells[k].ins).map(k=>'<li><b>'+esc(lab(st.cells[k]))+':</b> '+esc(st.cells[k].ins)+'</li>').join('')||'<li>Cap inscripció registrada.</li>';
+  const svg=$('map').innerHTML;
+  const html='<!doctype html><html lang="ca"><head><meta charset="utf-8"><title>Estat del laberint</title><style>'+
+    'body{font:12px Arial,sans-serif;color:#18212b;margin:24px}h1,h2{font-family:Georgia,serif}h1{margin-bottom:4px}.muted{color:#586777}.summary{display:flex;gap:18px;flex-wrap:wrap;padding:10px;border:1px solid #aab5bf;margin:14px 0}.map{border:1px solid #aab5bf;padding:10px;overflow:visible}.map svg{max-width:100%;height:auto}.map .cell{fill:#fff;stroke:#536273;stroke-width:2}.map .cell.fin{stroke:#2e8b57;stroke-width:4}.map .cell.here{stroke:#1f2a37;stroke-width:5}.map .lnk{stroke:#5b6b7b;stroke-width:5;stroke-linecap:round}.map .b.chest{fill:#c98a00}.map .b.req{fill:#c2382f}.map .b.opt{fill:#2f6fb5}.map .b.fin{fill:#2e8b57}.map .b.ins{fill:#7a4fb5}.map .bt{font:700 12px sans-serif;fill:white;text-anchor:middle}.map .bt.sm{font-size:10px}.map .lbl{font:700 11px sans-serif;fill:#5b6b7b;text-anchor:middle}.map .me{font:700 13px sans-serif;fill:#1f2a37;text-anchor:middle}.map .ex{fill:#1f2a37}table{border-collapse:collapse;width:100%;margin-top:8px}th,td{border:1px solid #c5ced6;padding:6px;text-align:left;vertical-align:top}th{background:#edf1f4}td:last-child{white-space:pre-wrap;overflow-wrap:anywhere}li{margin:7px 0;overflow-wrap:anywhere}.pagebreak{break-before:page}@page{size:A4 landscape;margin:12mm}@media print{body{margin:0}.map{break-inside:avoid}}'+
+    '</style></head><body><h1>Mapa del laberint</h1><p class="muted">Exportació de l’estat actual · '+new Date().toLocaleString('ca-ES')+'</p>'+
+    '<div class="summary"><span><b>Llums actuals:</b> '+now+'</span><span><b>Inicials:</b> '+st.llums0+'</span><span><b>Cofres:</b> +'+chestTotal+'</span><span><b>Canvis de sales visitades:</b> '+(roomTotal>0?'+':'')+roomTotal+'</span><span><b>Gastades:</b> '+spent+'</span><span><b>Sales:</b> '+keys.length+'</span><span><b>Passos:</b> '+steps+'</span></div>'+
+    '<p><b>Recorregut:</b> '+esc(trail)+' · <b>Sala actual:</b> '+esc(lab(st.cells[st.pos]))+'</p><h2>Mapa</h2><div class="map">'+svg+'</div>'+
+    '<section class="pagebreak"><h2>Inscripcions trobades</h2><ol>'+ins+'</ol><h2>Informació de totes les sales</h2><table><thead><tr><th>Sala</th><th>Elements</th><th>Sortides</th><th>Llums cofre</th><th>Canvi sala</th><th>Nota</th><th>Inscripció (text complet)</th></tr></thead><tbody>'+rooms+'</tbody></table></section>'+
+    '<script>window.onload=()=>setTimeout(()=>window.print(),300);<\/script></body></html>';
+  w.document.open();w.document.write(html);w.document.close();
+}
+$('export-pdf').addEventListener('click',exportPDF);
+
 render(true);
 </script>
 </body>
