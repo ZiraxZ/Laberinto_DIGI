@@ -19,6 +19,11 @@ h1{font:700 1.5rem/1.2 Georgia,"Times New Roman",serif;margin:4px 0 2px}
 h2{font:700 1.05rem/1.2 Georgia,"Times New Roman",serif;margin:18px 0 6px}
 .sub{color:var(--muted);margin:0 0 12px;font-size:.9rem}
 .lights{display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:10px 12px;margin:0 0 12px}
+details.config{background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:10px 12px;margin:0 0 12px}
+details.config summary{cursor:pointer;font-weight:700;font-family:Georgia,"Times New Roman",serif}
+details.config .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:10px}
+details.config .fld{font-size:.82rem;color:var(--muted)}
+details.config input{width:100%}
 .big{font:700 2.4rem/1 Georgia,"Times New Roman",serif;color:var(--chest)}
 .big.low{color:var(--req)}
 .big small{font:600 .8rem "Trebuchet MS",sans-serif;color:var(--muted);margin-left:6px}
@@ -50,7 +55,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .flags{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .flags button[aria-pressed="true"]{color:var(--on);border-color:transparent}
 #f-chest[aria-pressed="true"]{background:var(--chest)}#f-req[aria-pressed="true"]{background:var(--req)}#f-opt[aria-pressed="true"]{background:var(--opt)}#f-fin[aria-pressed="true"]{background:var(--fin)}
-input,textarea{font:inherit;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:8px 10px;width:100%;box-sizing:border-box;margin-top:4px}
+input,textarea,select{font:inherit;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:8px 10px;width:100%;box-sizing:border-box;margin-top:4px}
 textarea{resize:vertical;min-height:64px}
 .panel .fld{margin-top:10px}
 .row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
@@ -69,6 +74,40 @@ textarea{resize:vertical;min-height:64px}
 .exits button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 .card{margin-top:12px;background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:10px 12px;font-size:.95rem}
 .card .row{margin-top:8px}
+button.mini{min-height:30px;padding:2px 8px;font-size:.8rem;margin-left:2px}
+#prove-modal,#contact-modal{position:fixed;inset:0;background:rgba(10,16,22,.6);display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}
+#prove-modal .box,#contact-modal .box{background:var(--paper);border:2px solid var(--ink);border-radius:12px;padding:20px;max-width:420px;width:100%;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+#prove-modal .qa{font:700 1.25rem/1.25 Georgia,"Times New Roman",serif;margin:0 0 4px}
+#prove-modal .qsub,#contact-modal .qsub{color:var(--muted);font-size:.9rem;margin:0 0 16px}
+#prove-modal .qbtns,#contact-modal .qbtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+#prove-modal .qbtns button,#contact-modal .qbtns button{flex:1 1 150px;font-weight:700}
+#prove-ok{border-color:var(--fin);background:var(--fin);color:var(--on)}
+#prove-ko{border-color:var(--req);background:var(--req);color:var(--on)}
+#prove-modal .later{margin-top:12px;min-height:36px;font-size:.85rem;background:transparent}
+#contact-modal .box{max-width:480px;max-height:calc(100vh - 32px);overflow:auto;text-align:left}
+#contact-modal h2{font:700 1.25rem/1.2 Georgia,"Times New Roman",serif;margin:0 30px 4px 0}
+#contact-close{position:absolute;top:12px;right:12px;min-height:32px;padding:0 8px;font-size:1.2rem;line-height:1;background:transparent}
+#contact-modal .box{position:relative}
+#contact-modal .fld{display:block;margin-top:10px;font-size:.82rem;color:var(--muted);text-align:left}
+#contact-modal textarea{min-height:96px}
+#contact-modal .qbtns{margin-top:16px}
+#contact-send{border-color:var(--fin);background:var(--fin);color:var(--on)}
+#contact-note{margin:10px 0 0;font-size:.78rem;color:var(--muted);text-align:left}
+.site-footer{margin-top:32px;border-top:3px solid var(--grid);background:var(--paper)}
+.footer-inner{max-width:760px;margin:0 auto;padding:24px 16px 18px;display:grid;grid-template-columns:minmax(190px,220px) 1fr;gap:24px 32px;align-items:center}
+.footer-brand{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.footer-logo{display:inline-block;background:#fff;border:1px solid var(--grid);border-radius:8px;padding:8px 12px;line-height:0}
+.footer-logo img{display:block;width:180px;height:auto;max-width:100%}
+.footer-tagline{font-size:.85rem;color:var(--muted);margin:0;line-height:1.5}
+.footer-credits{text-align:right;font-size:.85rem;color:var(--muted);line-height:1.6}
+.footer-credits h2{font:700 .8rem/1.2 "Trebuchet MS",sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--ink);margin:0 0 6px}
+.footer-credits p{margin:0}
+.footer-credits b{color:var(--ink)}
+.footer-bottom{border-top:1px solid var(--grid);max-width:760px;margin:0 auto;padding:12px 16px 20px;display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap;font-size:.78rem;color:var(--muted)}
+.footer-bottom a{color:var(--opt);text-decoration:none}
+.footer-bottom a:hover{text-decoration:underline}
+.footer-bottom button{min-height:36px;padding:4px 12px;font-size:.78rem}
+@media (max-width:560px){.footer-inner{grid-template-columns:1fr;gap:18px}.footer-credits{text-align:left}.footer-logo img{width:150px}}
 </style>
 </head>
 <body>
@@ -76,13 +115,22 @@ textarea{resize:vertical;min-height:64px}
 <h1>Mapa del laberint</h1>
 <p class="sub">Prem la direcció cada cop que et moguis i el mapa es dibuixa sol. També pots fer servir les fletxes del teclat. Toca una sala del mapa per veure’n les sortides i prem «Vés-hi» per moure’t-hi.</p>
 
+<details class="config" id="config">
+<summary>Configuració (valors del joc)</summary>
+<div class="grid">
+<label class="fld">Llums inicials<input id="l0" type="number" min="0" inputmode="numeric"></label>
+<label class="fld">Llums per pas<input id="cost" type="number" min="0" inputmode="numeric"></label>
+<label class="fld">Prova ben feta (+ llums)<input id="cfg-prove-ok" type="number" step="1" inputmode="numeric"></label>
+<label class="fld">Prova mal feta (− llums)<input id="cfg-prove-ko" type="number" step="1" inputmode="numeric"></label>
+<label class="fld">Cofre (+ llums, per defecte)<input id="cfg-chest" type="number" min="0" inputmode="numeric"></label>
+<label class="fld">Canvi de sala (+ / −, per defecte)<input id="cfg-room" type="number" step="1" inputmode="numeric"></label>
+</div>
+<p class="sub" style="margin:8px 0 0">Els valors de prova s’apliquen en entrar a una sala amb prova obligatòria o opcional. El resultat es demana un cop per sala i es pot canviar després tocant la sala al mapa.</p>
+</details>
+
 <section class="lights" aria-label="Llums">
 <div class="big" id="l-big"><span id="l-now">0</span><small>llums</small></div>
 <div id="l-info" aria-live="polite"></div>
-<div class="set">
-<label class="fld">Llums inicials<input id="l0" type="number" min="0" inputmode="numeric"></label>
-<label class="fld">Llums per pas<input id="cost" type="number" min="0" inputmode="numeric"></label>
-</div>
 </section>
 
 <div id="map" aria-label="Mapa del laberint"></div>
@@ -112,30 +160,94 @@ textarea{resize:vertical;min-height:64px}
 
 <h2>Inscripcions trobades</h2>
 <ul id="ins-list"></ul>
+
+<div id="prove-modal" hidden>
+<div class="box" role="dialog" aria-modal="true" aria-labelledby="prove-title">
+<p class="qa" id="prove-title">Has fet bé aquesta prova?</p>
+<p class="qsub" id="prove-sub"></p>
+<div class="qbtns">
+<button id="prove-ok">Sí, ben feta (+<span id="prove-ok-val"></span> llums)</button>
+<button id="prove-ko">No, mal feta (−<span id="prove-ko-val"></span> llums)</button>
+</div>
+<button id="prove-later" class="later">Respondre després</button>
+</div>
+</div>
 </main>
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-brand">
+<a class="footer-logo" href="https://www.iesthosicodina.cat/" target="_blank" rel="noopener noreferrer" aria-label="Web del IES Thos i Codina">
+<img src="assets/logo-thos-i-codina.png" alt="IES Thos i Codina" width="452" height="80">
+</a>
+<p class="footer-tagline">Mapa del laberint · eina de digitalització del centre</p>
+</div>
+<div class="footer-credits">
+<h2>Desenvolupament</h2>
+<p>Este sitio es del <b>Thos i Codina</b> y ha estado desarrollado en el módulo de <b>Digitalización</b> del grado superior de <b>DAW</b> por <b>Eduardo Muñoz</b> y <b>Marcel Bonal</b>.</p>
+</div>
+</div>
+<div class="footer-bottom">
+<span>© IES Thos i Codina · Módulo de Digitalización · DAW</span>
+<button id="contact-open" type="button" aria-haspopup="dialog">✉ Contacto y sugerencias</button>
+<a href="https://www.iesthosicodina.cat/" target="_blank" rel="noopener noreferrer">iesthosicodina.cat</a>
+</div>
+</footer>
+
+<div id="contact-modal" hidden>
+<div class="box" role="dialog" aria-modal="true" aria-labelledby="contact-title">
+<button id="contact-close" type="button" aria-label="Cerrar">×</button>
+<h2 id="contact-title">Contacto y sugerencias</h2>
+<p class="qsub">¿Has encontrado un error o tienes alguna sugerencia? Envíanosla y la revisaremos.</p>
+<form id="contact-form">
+<label class="fld">Tu nombre <input id="contact-name" type="text" maxlength="80" autocomplete="name"></label>
+<label class="fld">Tu correo (opcional) <input id="contact-email" type="email" maxlength="120" autocomplete="email"></label>
+<label class="fld">Motivo
+<select id="contact-type">
+<option value="sugerencia">Sugerencia</option>
+<option value="error">Reportar un error</option>
+<option value="otro">Otro</option>
+</select>
+</label>
+<label class="fld">Mensaje <textarea id="contact-msg" maxlength="2000" required placeholder="Cuéntanos qué ha pasado o qué te gustaría mejorar..."></textarea></label>
+<p id="contact-note">Al pulsar «Abrir correo» se abrirá tu aplicación de correo con el mensaje preparado para los dos destinatarios.</p>
+<div class="qbtns">
+<button id="contact-send" type="submit">Abrir correo</button>
+<button id="contact-cancel" type="button">Cancelar</button>
+</div>
+</form>
+</div>
+</div>
 <script>
 const D={N:[0,-1],S:[0,1],E:[1,0],O:[-1,0]};
 const DN={N:'Nord',S:'Sud',E:'Est',O:'Oest'};
-const STEP=96,SZ=72,PAD=50,KEY='laberint-v2';
+const STEP=96,SZ=72,PAD=50,KEY='laberint-v3';
 const $=id=>document.getElementById(id);
 const num=v=>Math.max(0,parseInt(v,10)||0);
+const int=v=>parseInt(v,10)||0;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let st=load(),armed=false,sel=null;
-function fresh(l0,cost){return{cells:{'0,0':nc(0,0)},pos:'0,0',links:[],hist:[],llums0:l0||0,cost:cost==null?1:cost}}
-function nc(x,y){return{x:x,y:y,chest:0,req:0,opt:0,fin:0,gain:0,roomLight:0,ins:'',ex:'',note:''}}
+const DEF={proveOk:2,proveKo:1,chest:3,room:0};
+let st=load(),armed=false,sel=null,pendingProve=null;
+function cfg(name){return st.config&&typeof st.config[name]==='number'?st.config[name]:DEF[name]}
+function fresh(l0,cost){return{cells:{'0,0':nc(0,0)},pos:'0,0',links:[],hist:[],llums0:l0||0,cost:cost==null?1:cost,config:Object.assign({},DEF)}}
+function nc(x,y){return{x:x,y:y,chest:0,req:0,opt:0,fin:0,gain:0,roomLight:0,prove:null,ins:'',ex:'',note:''}}
 function load(){
   try{
-    const s=localStorage.getItem(KEY)||localStorage.getItem('laberint-v1');
+    const s=localStorage.getItem(KEY)||localStorage.getItem('laberint-v2')||localStorage.getItem('laberint-v1');
     if(s){const o=JSON.parse(s);
       if(o&&o.cells&&o.cells[o.pos]){
         if(typeof o.llums0!=='number')o.llums0=0;
         if(typeof o.cost!=='number')o.cost=1;
-        for(const k in o.cells){const c=o.cells[k];if(typeof c.gain!=='number')c.gain=0;if(typeof c.roomLight!=='number')c.roomLight=0;if(typeof c.ins!=='string')c.ins='';if(typeof c.ex!=='string')c.ex=''}
+        o.config=Object.assign({},DEF,o.config||{});
+        for(const k in o.cells){const c=o.cells[k];if(typeof c.gain!=='number')c.gain=0;if(typeof c.roomLight!=='number')c.roomLight=0;if(c.prove!==null&&c.prove!=='ok'&&c.prove!=='ko')c.prove=null;if(typeof c.ins!=='string')c.ins='';if(typeof c.ex!=='string')c.ex=''}
         return o}}
   }catch(e){}
   return fresh();
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+function askProve(k){
+  const c=st.cells[k];
+  if((c.req||c.opt)&&c.prove===null)pendingProve=k;
+}
 function move(d){
   const c=st.cells[st.pos],nx=c.x+D[d][0],ny=c.y+D[d][1],k=nx+','+ny;
   let created=false,linked=false;
@@ -143,18 +255,22 @@ function move(d){
   const lk=[st.pos,k].sort().join('|');
   if(!st.links.includes(lk)){st.links.push(lk);linked=true}
   st.hist.push({from:st.pos,to:k,d:d,created:created,linked:linked,lk:lk});
-  st.pos=k;sel=null;save();render(true);
+  st.pos=k;sel=null;askProve(k);save();render(true);
 }
 function jump(k){
   if(k===st.pos)return;
   st.hist.push({from:st.pos,to:k,d:null,created:false,linked:false,lk:''});
-  st.pos=k;sel=null;save();render(true);
+  st.pos=k;sel=null;askProve(k);save();render(true);
 }
 function undo(){
   const h=st.hist.pop();if(!h)return;
   if(h.linked)st.links=st.links.filter(l=>l!==h.lk);
   if(h.created)delete st.cells[h.to];
-  st.pos=h.from;sel=null;save();render(true);
+  st.pos=h.from;sel=null;pendingProve=null;save();render(true);
+}
+function setProve(k,res){
+  const c=st.cells[k];if(!c)return;
+  c.prove=res;pendingProve=null;save();render();
 }
 function dist(from,isT){
   const adj={};
@@ -201,17 +317,20 @@ function render(center){
   $('gain-row').hidden=!cur.chest;
   setVal($('gain'),cur.gain);setVal($('room-light'),cur.roomLight||0);setVal($('ins'),cur.ins||'');setVal($('note'),cur.note||'');
   setVal($('l0'),st.llums0);setVal($('cost'),st.cost);
+  setVal($('cfg-prove-ok'),cfg('proveOk'));setVal($('cfg-prove-ko'),cfg('proveKo'));
+  setVal($('cfg-chest'),cfg('chest'));setVal($('cfg-room'),cfg('room'));
 
   let gain=0;keys.forEach(k=>{if(st.cells[k].chest)gain+=st.cells[k].gain||0});
   const visited=new Set(['0,0',st.pos,...st.hist.map(h=>h.to)]);
   let roomDelta=0;visited.forEach(k=>{if(st.cells[k])roomDelta+=st.cells[k].roomLight||0});
-  const steps=st.hist.filter(h=>h.d).length,spent=steps*st.cost,now=st.llums0+gain+roomDelta-spent;
+  let proveDelta=0;visited.forEach(k=>{const c=st.cells[k];if(c&&c.prove==='ok')proveDelta+=cfg('proveOk');else if(c&&c.prove==='ko')proveDelta-=cfg('proveKo')});
+  const steps=st.hist.filter(h=>h.d).length,spent=steps*st.cost,now=st.llums0+gain+roomDelta+proveDelta-spent;
   const toStart=dist(st.pos,k=>k==='0,0'),toFin=dist(st.pos,k=>st.cells[k].fin);
   const need=toStart===null?0:toStart*st.cost;
   const low=now<=0||now<need;
   $('l-now').textContent=now;
   $('l-big').className='big'+(low?' low':'');
-  let info='Inicials: <b>'+st.llums0+'</b> · Dels cofres: <b>+'+gain+'</b> · Sales: <b>'+(roomDelta>0?'+':'')+roomDelta+'</b> · Gastades: <b>'+spent+'</b>';
+  let info='Inicials: <b>'+st.llums0+'</b> · Dels cofres: <b>+'+gain+'</b> · Sales: <b>'+(roomDelta>0?'+':'')+roomDelta+'</b> · Proves: <b>'+(proveDelta>0?'+':'')+proveDelta+'</b> · Gastades: <b>'+spent+'</b>';
   info+='<br>Fins a l’inici: <b>'+(toStart===null?'—':toStart+' passos')+'</b>';
   if(toFin)info+=' · Fins al final: <b>'+toFin+' passos</b>';
   if(now<=0)info+='<br><span class="warn">Sense llums! Ja no pots avançar.</span>';
@@ -223,23 +342,70 @@ function render(center){
   let ch='<b>'+(sk===st.pos?'Sala actual: ':'Sala: ')+lab(sc)+'</b><br>';
   ch+=sx?'Sortides: '+['N','S','E','O'].filter(d=>sx.includes(d)).map(d=>{const nk=(sc.x+D[d][0])+','+(sc.y+D[d][1]);return '<b>'+DN[d]+'</b>'+(st.links.includes([sk,nk].sort().join('|'))?'':' (per explorar)')}).join(', ')+'.':'<span class="empty">Cap sortida apuntada en aquesta sala.</span>';
   if(sc.roomLight)ch+='<br>Canvi de llums d’aquesta sala: <b>'+(sc.roomLight>0?'+':'')+sc.roomLight+'</b>';
+  if(sc.req||sc.opt){
+    const pr=sc.prove;
+    ch+='<br>Prova '+(sc.req?'obligatòria':'opcional')+': <b>'+(pr==='ok'?'Ben feta (+'+cfg('proveOk')+' llums)':pr==='ko'?'Mal feta (−'+cfg('proveKo')+' llums)':'Pendent de respondre')+'</b>';
+    if(pr!==null)ch+=' <button class="mini" data-prov="ok">✔ Ben feta</button> <button class="mini" data-prov="ko">✘ Mal feta</button>';
+  }
   if(sc.ins)ch+='<br>Inscripció: '+esc(sc.ins);
   if(sc.note)ch+='<br>Nota: '+esc(sc.note);
   if(sk!==st.pos)ch+='<div class="row"><button id="go">Vés-hi</button></div>';
   $('card').innerHTML=ch;
   const go=$('go');if(go)go.addEventListener('click',()=>jump(sk));
+  $('card').querySelectorAll('[data-prov]').forEach(b=>b.addEventListener('click',()=>setProve(sk,b.dataset.prov)));
+  renderProveDialog();
   $('log').innerHTML='Caselles: <b>'+keys.length+'</b> · Passos: <b>'+steps+'</b>'+(trail?'<br>Recorregut: <b>'+trail+'</b>':'');
 
   const items=keys.filter(k=>st.cells[k].ins);
   $('ins-list').innerHTML=items.length?items.map(k=>'<li><button data-j="'+k+'">'+lab(st.cells[k])+'</button><span>'+esc(st.cells[k].ins)+'</span></li>').join(''):'<li class="empty">Encara no has apuntat cap inscripció. Escriu-la a la casella on la trobis.</li>';
   document.querySelectorAll('[data-j]').forEach(b=>b.addEventListener('click',()=>{jump(b.dataset.j)}));
 }
+function renderProveDialog(){
+  const m=$('prove-modal');
+  if(!pendingProve||!st.cells[pendingProve]||pendingProve!==st.pos){m.hidden=true;return}
+  const c=st.cells[pendingProve];
+  $('prove-sub').textContent=lab(c)+' · '+(c.req?'Prova obligatòria':'Prova opcional');
+  $('prove-ok-val').textContent=cfg('proveOk');
+  $('prove-ko-val').textContent=cfg('proveKo');
+  m.hidden=false;
+}
+$('prove-ok').addEventListener('click',()=>setProve(st.pos,'ok'));
+$('prove-ko').addEventListener('click',()=>setProve(st.pos,'ko'));
+$('prove-later').addEventListener('click',()=>{pendingProve=null;render()});
+
+const CONTACT_TO='marcelbon2008@gmail.com,eduardomues2008@gmail.com';
+function openContact(){$('contact-modal').hidden=false;$('contact-msg').focus()}
+function closeContact(){$('contact-modal').hidden=true}
+$('contact-open').addEventListener('click',openContact);
+$('contact-close').addEventListener('click',closeContact);
+$('contact-cancel').addEventListener('click',closeContact);
+$('contact-modal').addEventListener('click',e=>{if(e.target===$('contact-modal'))closeContact()});
+$('contact-form').addEventListener('submit',e=>{
+  e.preventDefault();
+  const msg=$('contact-msg').value.trim();
+  if(!msg){$('contact-msg').focus();return}
+  const labels={sugerencia:'Sugerencia',error:'Error',otro:'Otro'};
+  const type=labels[$('contact-type').value]||'Contacto';
+  const name=$('contact-name').value.trim(),from=$('contact-email').value.trim();
+  let body=msg+'\n\n—';
+  if(name)body+='\n'+name;
+  if(from)body+='\n'+from;
+  body+='\nEnviado desde: Mapa del laberint (IES Thos i Codina)';
+  const url='mailto:'+CONTACT_TO+'?subject='+encodeURIComponent('['+type+'] Mapa del laberint')+'&body='+encodeURIComponent(body);
+  const a=document.createElement('a');a.href=url;a.style.display='none';document.body.appendChild(a);a.click();a.remove();
+  closeContact();
+});
+
 document.querySelectorAll('[data-d]').forEach(b=>b.addEventListener('click',()=>move(b.dataset.d)));
-document.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{const c=st.cells[st.pos];c[b.dataset.f]=c[b.dataset.f]?0:1;save();render()}));
+document.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{const c=st.cells[st.pos],f=b.dataset.f;c[f]=c[f]?0:1;if((f==='req'||f==='opt')&&c[f]&&c.prove===null)askProve(st.pos);else if(!c.req&&!c.opt){c.prove=null;if(pendingProve===st.pos)pendingProve=null}save();render()}));
 $('l0').addEventListener('input',e=>{st.llums0=num(e.target.value);save();render()});
 $('cost').addEventListener('input',e=>{st.cost=num(e.target.value);save();render()});
 $('gain').addEventListener('input',e=>{st.cells[st.pos].gain=num(e.target.value);save();render()});
 $('room-light').addEventListener('input',e=>{st.cells[st.pos].roomLight=parseInt(e.target.value,10)||0;save();render()});
+$('cfg-prove-ok').addEventListener('input',e=>{st.config.proveOk=int(e.target.value);save();render()});
+$('cfg-prove-ko').addEventListener('input',e=>{st.config.proveKo=int(e.target.value);save();render()});
+$('cfg-chest').addEventListener('input',e=>{st.config.chest=num(e.target.value);st.cells[st.pos].gain=st.config.chest;save();render()});
+$('cfg-room').addEventListener('input',e=>{st.config.room=int(e.target.value);st.cells[st.pos].roomLight=st.config.room;save();render()});
 $('ins').addEventListener('input',e=>{st.cells[st.pos].ins=e.target.value;save();render()});
 $('note').addEventListener('input',e=>{st.cells[st.pos].note=e.target.value;save()});
 document.querySelectorAll('[data-x]').forEach(b=>b.addEventListener('click',()=>{const c=st.cells[st.pos],d=b.dataset.x,s=c.ex||'';c.ex=s.includes(d)?s.replace(d,''):s+d;save();render()}));
@@ -247,10 +413,17 @@ $('undo').addEventListener('click',undo);
 const rb=$('reset');
 rb.addEventListener('click',()=>{
   if(!armed){armed=true;rb.textContent='Segur? Prem un altre cop';setTimeout(()=>{armed=false;rb.textContent='Torna a començar'},3000);return}
-  armed=false;rb.textContent='Torna a començar';st=fresh(st.llums0,st.cost);sel=null;save();render(true);
+  armed=false;rb.textContent='Torna a començar';const keep=st.config;st=fresh(st.llums0,st.cost);st.config=keep;sel=null;pendingProve=null;save();render(true);
 });
 document.addEventListener('keydown',e=>{
-  if(/INPUT|TEXTAREA/.test(e.target.tagName))return;
+  const contactOpen=!$('contact-modal').hidden;
+  if(e.key==='Escape'){
+    if(contactOpen)closeContact();
+    else if(!$('prove-modal').hidden){pendingProve=null;render()}
+    return;
+  }
+  if(contactOpen||!$('prove-modal').hidden)return;
+  if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
   const m={ArrowUp:'N',ArrowDown:'S',ArrowRight:'E',ArrowLeft:'O'}[e.key];
   if(m){e.preventDefault();move(m)}
 });
@@ -259,24 +432,25 @@ function exportPDF(){
   const w=window.open('','_blank');
   if(!w){alert('El navegador ha bloquejat la finestra. Permet les finestres emergents per descarregar el PDF.');return}
   const keys=Object.keys(st.cells),visited=new Set(['0,0',st.pos,...st.hist.map(h=>h.to)]);
-  let chestTotal=0,roomTotal=0;
-  keys.forEach(k=>{const c=st.cells[k];if(c.chest)chestTotal+=c.gain||0;if(visited.has(k))roomTotal+=c.roomLight||0});
-  const steps=st.hist.filter(h=>h.d).length,spent=steps*st.cost,now=st.llums0+chestTotal+roomTotal-spent;
+  let chestTotal=0,roomTotal=0,proveTotal=0;
+  keys.forEach(k=>{const c=st.cells[k];if(c.chest)chestTotal+=c.gain||0;if(visited.has(k))roomTotal+=c.roomLight||0;if(visited.has(k)&&c.prove==='ok')proveTotal+=cfg('proveOk');else if(visited.has(k)&&c.prove==='ko')proveTotal-=cfg('proveKo')});
+  const steps=st.hist.filter(h=>h.d).length,spent=steps*st.cost,now=st.llums0+chestTotal+roomTotal+proveTotal-spent;
   const trail=st.hist.map(h=>h.d||'↷').join(' ')||'—';
   const flags=c=>['chest','req','opt','fin'].filter(f=>c[f]).map(f=>({chest:'Cofre',req:'Prova obligatòria',opt:'Prova opcional',fin:'Final'}[f])).join(', ')||'—';
+  const provText=c=>!c.req&&!c.opt?'—':c.prove==='ok'?'Ben feta (+'+cfg('proveOk')+')':c.prove==='ko'?'Mal feta (−'+cfg('proveKo')+')':'Pendent';
   const exits=c=>['N','S','E','O'].filter(d=>(c.ex||'').includes(d)).map(d=>DN[d]).join(', ')||'—';
   const rooms=keys.map(k=>{
     const c=st.cells[k];
-    return '<tr><td>'+esc(lab(c))+'</td><td>'+esc(flags(c))+'</td><td>'+esc(exits(c))+'</td><td>'+(c.chest?c.gain:0)+'</td><td>'+(c.roomLight>0?'+':'')+(c.roomLight||0)+'</td><td>'+esc(c.note||'—')+'</td><td>'+esc(c.ins||'—')+'</td></tr>';
+    return '<tr><td>'+esc(lab(c))+'</td><td>'+esc(flags(c))+'</td><td>'+esc(exits(c))+'</td><td>'+(c.chest?c.gain:0)+'</td><td>'+(c.roomLight>0?'+':'')+(c.roomLight||0)+'</td><td>'+esc(provText(c))+'</td><td>'+esc(c.note||'—')+'</td><td>'+esc(c.ins||'—')+'</td></tr>';
   }).join('');
   const ins=keys.filter(k=>st.cells[k].ins).map(k=>'<li><b>'+esc(lab(st.cells[k]))+':</b> '+esc(st.cells[k].ins)+'</li>').join('')||'<li>Cap inscripció registrada.</li>';
   const svg=$('map').innerHTML;
   const html='<!doctype html><html lang="ca"><head><meta charset="utf-8"><title>Estat del laberint</title><style>'+
     'body{font:12px Arial,sans-serif;color:#18212b;margin:24px}h1,h2{font-family:Georgia,serif}h1{margin-bottom:4px}.muted{color:#586777}.summary{display:flex;gap:18px;flex-wrap:wrap;padding:10px;border:1px solid #aab5bf;margin:14px 0}.map{border:1px solid #aab5bf;padding:10px;overflow:visible}.map svg{max-width:100%;height:auto}.map .cell{fill:#fff;stroke:#536273;stroke-width:2}.map .cell.fin{stroke:#2e8b57;stroke-width:4}.map .cell.here{stroke:#1f2a37;stroke-width:5}.map .lnk{stroke:#5b6b7b;stroke-width:5;stroke-linecap:round}.map .b.chest{fill:#c98a00}.map .b.req{fill:#c2382f}.map .b.opt{fill:#2f6fb5}.map .b.fin{fill:#2e8b57}.map .b.ins{fill:#7a4fb5}.map .bt{font:700 12px sans-serif;fill:white;text-anchor:middle}.map .bt.sm{font-size:10px}.map .lbl{font:700 11px sans-serif;fill:#5b6b7b;text-anchor:middle}.map .me{font:700 13px sans-serif;fill:#1f2a37;text-anchor:middle}.map .ex{fill:#1f2a37}table{border-collapse:collapse;width:100%;margin-top:8px}th,td{border:1px solid #c5ced6;padding:6px;text-align:left;vertical-align:top}th{background:#edf1f4}td:last-child{white-space:pre-wrap;overflow-wrap:anywhere}li{margin:7px 0;overflow-wrap:anywhere}.pagebreak{break-before:page}@page{size:A4 landscape;margin:12mm}@media print{body{margin:0}.map{break-inside:avoid}}'+
     '</style></head><body><h1>Mapa del laberint</h1><p class="muted">Exportació de l’estat actual · '+new Date().toLocaleString('ca-ES')+'</p>'+
-    '<div class="summary"><span><b>Llums actuals:</b> '+now+'</span><span><b>Inicials:</b> '+st.llums0+'</span><span><b>Cofres:</b> +'+chestTotal+'</span><span><b>Canvis de sales visitades:</b> '+(roomTotal>0?'+':'')+roomTotal+'</span><span><b>Gastades:</b> '+spent+'</span><span><b>Sales:</b> '+keys.length+'</span><span><b>Passos:</b> '+steps+'</span></div>'+
+    '<div class="summary"><span><b>Llums actuals:</b> '+now+'</span><span><b>Inicials:</b> '+st.llums0+'</span><span><b>Cofres:</b> +'+chestTotal+'</span><span><b>Canvis de sales visitades:</b> '+(roomTotal>0?'+':'')+roomTotal+'</span><span><b>Proves:</b> '+(proveTotal>0?'+':'')+proveTotal+'</span><span><b>Gastades:</b> '+spent+'</span><span><b>Sales:</b> '+keys.length+'</span><span><b>Passos:</b> '+steps+'</span></div>'+
     '<p><b>Recorregut:</b> '+esc(trail)+' · <b>Sala actual:</b> '+esc(lab(st.cells[st.pos]))+'</p><h2>Mapa</h2><div class="map">'+svg+'</div>'+
-    '<section class="pagebreak"><h2>Inscripcions trobades</h2><ol>'+ins+'</ol><h2>Informació de totes les sales</h2><table><thead><tr><th>Sala</th><th>Elements</th><th>Sortides</th><th>Llums cofre</th><th>Canvi sala</th><th>Nota</th><th>Inscripció (text complet)</th></tr></thead><tbody>'+rooms+'</tbody></table></section>'+
+    '<section class="pagebreak"><h2>Inscripcions trobades</h2><ol>'+ins+'</ol><h2>Informació de totes les sales</h2><table><thead><tr><th>Sala</th><th>Elements</th><th>Sortides</th><th>Llums cofre</th><th>Canvi sala</th><th>Prova</th><th>Nota</th><th>Inscripció (text complet)</th></tr></thead><tbody>'+rooms+'</tbody></table></section>'+
     '<script>window.onload=()=>setTimeout(()=>window.print(),300);<\/script></body></html>';
   w.document.open();w.document.write(html);w.document.close();
 }
